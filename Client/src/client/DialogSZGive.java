@@ -37,21 +37,33 @@ public class DialogSZGive extends javax.swing.JDialog {
             datemask1 = new MaskFormatter("##.##.####");
         } catch (ParseException e) {
         }
+
         datemask1.install(jFormattedTextField1);
         jFormattedTextField1.setText(this.Get_CurrentDate());
         //jTextField13.setText("ÑÊÇÈ \"MS_KEY K\" Èñï.5.1.1");
         jComboBox1.removeAllItems();
         jComboBox2.removeAllItems();
+               
+        String[] skziList=new String[0];
+        try {
+            skziList = this.GetUsableSKZI();
+        } catch (SQLException e) {
+        }        
         
+        for (int i=0;i<skziList.length;i++){
+            System.out.println("list:"+skziList[i]);
+            jComboBox1.addItem(skziList[i]);
+        }
+
         jComboBox2.addItem("VASCO Digipass Go3");
-        
-        jComboBox1.addItem("ÑÊÇÈ \"MS_KEY K\" - \"ÀÍÃÀÐÀ\" Èñï.8.1.1");
-        jComboBox1.addItem("ÑÊÇÈ Ðóòîêåí ÝÖÏ 2.0");
+        /////jComboBox1.addItem("ÑÊÇÈ \"MS_KEY K\" - \"ÀÍÃÀÐÀ\" Èñï.8.1.1");
+        /////jComboBox1.addItem("ÑÊÇÈ Ðóòîêåí ÝÖÏ 2.0");
         //jComboBox1.addItem("ÑÊÇÈ \"MS_KEY K\" Èñï.5.1.1");
         //jComboBox1.addItem("USB-òîêåí \"iBank 2 Key\" (ÑÊÇÈ ÔÎÐÎÑ. Èñïîëíåíèå ¹1)");
         //jComboBox1.addItem("USB-òîêåí \"iBank 2 Key\" (ÑÊÇÈ ÔÎÐÎÑ. Èñïîëíåíèå ¹2 / Êðèïòîìîäóëü C23)");
-        jComboBox1.addItem("Êðèïòî-Êîì 3.3");
+        /////jComboBox1.addItem("Êðèïòî-Êîì 3.3");
         //jComboBox1.addItem("USB-òîêåí \"iBank 2 Key\" (ÑÊÇÈ \"Êðèïòîìîäóëü C23\")");  
+                
         jComboBox1.setSelectedIndex(0);        
     }
 
@@ -411,6 +423,43 @@ public class DialogSZGive extends javax.swing.JDialog {
         FrameLogon.mainpool.Close();
         return resstr;
     }  
+
+    private String[] GetUsableSKZI() throws SQLException
+    {
+        String query="SELECT CSKZINAME v01 FROM XXI.KEYARCH_SKZI_TYPE WHERE RECSTATE=1";
+                                
+        Connection con = FrameLogon.mainpool.OpenConnection(); //DriverManager.getConnection(Frame1.get_dbconndata(1), Frame1.get_dbconndata(2), Frame1.get_dbconndata(3));
+        Statement st = con.createStatement();
+
+        ResultSet rs = st.executeQuery(query); 
+
+        String[] skzi=new String[0];
+        String s;
+        
+        while (rs.next()) 
+        {
+             s = rs.getString("v01");
+             skzi=Append(skzi,s);
+        }        
+
+        st.close();
+        con.close(); 
+        con = null;
+        FrameLogon.mainpool.Close();
+
+        return skzi;
+    }  
+
+    public static String[] Append(String[] stringArray, String newValue)
+    {
+        String[] tempArray = new String[ stringArray.length + 1 ];
+        for (int i=0; i<stringArray.length; i++)
+        {
+            tempArray[i] = stringArray[i];
+        }
+        tempArray[stringArray.length] = newValue;
+        return tempArray;
+    }
 
     private  String Get_CurrentDate(){
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");  //"yyyy-MM-dd HH:mm:ss");
