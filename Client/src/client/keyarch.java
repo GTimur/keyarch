@@ -20,7 +20,7 @@ import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 
 public class keyarch {
-    public static String VERSION_BANNER="Журнал СКЗИ (С) 2019 (Версия 0.5.2, ООО ЮМК банк)";
+    public static String VERSION_BANNER="Журнал СКЗИ (С) 2020 (Версия 0.5.2, ООО ЮМК банк)";
     public keyarch() {        
         JFrame frame = new FrameLogon();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

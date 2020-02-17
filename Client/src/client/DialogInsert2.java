@@ -1426,17 +1426,63 @@ public class DialogInsert2 extends JDialog {
         //this.jList2.setSelectedIndex(0);
                 
         /*Фраза USB Токен ibank2key добавляется ниже для строк с Криптомодулем*/
-        jComboBox3.addItem("СКЗИ \"MS_KEY K\" - \"АНГАРА\" Исп.8.1.1");
-        jComboBox3.addItem("СКЗИ Рутокен ЭЦП 2.0");
+        String[] skziList=new String[0];
+        try {
+            skziList = this.GetUsableSKZI();
+        } catch (SQLException e) {
+        }        
+        
+        for (int i=0;i<skziList.length;i++){
+            jComboBox3.addItem(skziList[i]);
+        }
+        
+        ////jComboBox3.addItem("СКЗИ \"MS_KEY K\" - \"АНГАРА\" Исп.8.1.1");
+        ////jComboBox3.addItem("СКЗИ Рутокен ЭЦП 2.0");
         //jComboBox3.addItem("СКЗИ \"MS_KEY K\" Исп.5.1.1");
         /*jComboBox3.addItem("(СКЗИ ФОРОС. Исполнение №1)");*/
         //jComboBox3.addItem("(СКЗИ ФОРОС. Исполнение №2 / Криптомодуль C23)");
-        jComboBox3.addItem("Крипто-Ком 3.3");
+        ////jComboBox3.addItem("Крипто-Ком 3.3");
         //jComboBox3.addItem("(СКЗИ \"Криптомодуль C23\")");
         
         combobox3changed=false;
     }
                
+    private String[] GetUsableSKZI() throws SQLException
+    {
+        String query="SELECT CSKZINAME v01 FROM XXI.KEYARCH_SKZI_TYPE WHERE RECSTATE=1";
+                                
+        Connection con = FrameLogon.mainpool.OpenConnection(); //DriverManager.getConnection(Frame1.get_dbconndata(1), Frame1.get_dbconndata(2), Frame1.get_dbconndata(3));
+        Statement st = con.createStatement();
+
+        ResultSet rs = st.executeQuery(query); 
+
+        String[] skzi=new String[0];
+        String s;
+        
+        while (rs.next()) 
+        {
+             s = rs.getString("v01");
+             skzi=Append(skzi,s);
+        }        
+
+        st.close();
+        con.close(); 
+        con = null;
+        FrameLogon.mainpool.Close();
+
+        return skzi;
+    }  
+
+    public static String[] Append(String[] stringArray, String newValue)
+    {
+        String[] tempArray = new String[ stringArray.length + 1 ];
+        for (int i=0; i<stringArray.length; i++)
+        {
+            tempArray[i] = stringArray[i];
+        }
+        tempArray[stringArray.length] = newValue;
+        return tempArray;
+    }
     
     public void fill_ownerdata(String ownerid) throws SQLException
     {

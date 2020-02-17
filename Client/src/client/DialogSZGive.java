@@ -51,7 +51,6 @@ public class DialogSZGive extends javax.swing.JDialog {
         }        
         
         for (int i=0;i<skziList.length;i++){
-            System.out.println("list:"+skziList[i]);
             jComboBox1.addItem(skziList[i]);
         }
 
