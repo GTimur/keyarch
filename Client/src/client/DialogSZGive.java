@@ -54,7 +54,18 @@ public class DialogSZGive extends javax.swing.JDialog {
             jComboBox1.addItem(skziList[i]);
         }
 
-        jComboBox2.addItem("VASCO Digipass Go3");
+        String[] otpList=new String[0];
+        try {
+            otpList = this.GetUsableOTP();
+        } catch (SQLException e) {
+        }        
+        
+        for (int i=0; i < otpList.length; i++){
+            jComboBox2.addItem(otpList[i]);
+        }
+
+
+        ///jComboBox2.addItem("VASCO Digipass Go3");
         /////jComboBox1.addItem("ÑÊÇÈ \"MS_KEY K\" - \"ÀÍÃÀÐÀ\" Èñï.8.1.1");
         /////jComboBox1.addItem("ÑÊÇÈ Ðóòîêåí ÝÖÏ 2.0");
         //jComboBox1.addItem("ÑÊÇÈ \"MS_KEY K\" Èñï.5.1.1");
@@ -447,6 +458,32 @@ public class DialogSZGive extends javax.swing.JDialog {
         FrameLogon.mainpool.Close();
 
         return skzi;
+    }  
+    
+    private String[] GetUsableOTP() throws SQLException
+    {
+        String query="SELECT COTPTYPE v01 FROM XXI.KEYARCH_OTP_TYPE WHERE IINUSE <> 0";
+                                
+        Connection con = FrameLogon.mainpool.OpenConnection(); //DriverManager.getConnection(Frame1.get_dbconndata(1), Frame1.get_dbconndata(2), Frame1.get_dbconndata(3));
+        Statement st = con.createStatement();
+
+        ResultSet rs = st.executeQuery(query); 
+
+        String[] otp=new String[0];
+        String s;
+        
+        while (rs.next()) 
+        {
+             s = rs.getString("v01");
+             otp=Append(otp,s);
+        }        
+
+        st.close();
+        con.close(); 
+        con = null;
+        FrameLogon.mainpool.Close();
+
+        return otp;
     }  
 
     public static String[] Append(String[] stringArray, String newValue)
